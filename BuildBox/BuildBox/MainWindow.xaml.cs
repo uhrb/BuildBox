@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using BuildBox.TeamCity;
 
 namespace BuildBox
@@ -22,6 +23,17 @@ namespace BuildBox
       Model = new MainWindowViewModel();
       Model.PropertyChanged += Model_PropertyChanged;
       InitializeComponent();
+      var ni = new System.Windows.Forms.NotifyIcon
+      {
+        Icon = new System.Drawing.Icon("Main.ico"), 
+        Visible = true
+      };
+      ni.DoubleClick +=
+          delegate
+          {
+            Show();
+            WindowState = WindowState.Normal;
+          };
     }
 
     public MainWindowViewModel Model { get; set; }
@@ -43,6 +55,16 @@ namespace BuildBox
       base.OnClosed(e);
       _thread.Abort();
       _thread.Join(1000);
+    }
+
+    protected override void OnStateChanged(EventArgs e)
+    {
+      if (WindowState == WindowState.Minimized)
+      {
+        Hide();
+      }
+
+      base.OnStateChanged(e);
     }
 
     private void ChangePort(string newOne)
@@ -77,9 +99,9 @@ namespace BuildBox
         {
           lsbLog.Items.Clear();
         }
-        
+
         lsbLog.Items.Add(msg);
-        lsbLog.ScrollIntoView(lsbLog.Items[lsbLog.Items.Count-1]);
+        lsbLog.ScrollIntoView(lsbLog.Items[lsbLog.Items.Count - 1]);
       });
     }
 
@@ -108,7 +130,6 @@ namespace BuildBox
           };
           LogMessage(string.Format("Build state {0} {1} {2}", state.BrokenByMe, state.BuildState, state.Progress));
           BoxModel.SetState(state);
-          
         }
         catch (ThreadAbortException)
         {
@@ -118,6 +139,7 @@ namespace BuildBox
         {
           LogMessage("Exception was thrown by status query worker");
         }
+
         Thread.Sleep(new TimeSpan(0, 0, 5));
       }
     }
