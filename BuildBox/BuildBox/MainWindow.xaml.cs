@@ -114,8 +114,8 @@ namespace BuildBox
           LogMessage("Querying about builds....");
           var task = Task.Run(() => _dataProvider.QueryForRunningBuilds());
           task.Wait();
-          var builds = task.Result; 
-          var interested = builds.Build.Where(l => l.BuildTypeId == "Plex_BuildAll").ToArray();
+          var builds = task.Result;
+          var interested = builds.Build.Where(l => l.BuildTypeId == "Plex_ContinuousIntegration_Rebuild").ToArray();
           LogMessage("Current our builds " + interested.Length);
           var minimum = interested.Length == 0 ? 0 : interested.Min(l => l.Number);
           var selected = interested.FirstOrDefault(l => l.Number == minimum);
