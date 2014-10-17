@@ -7,7 +7,7 @@ namespace BuildBox.TeamCity
 {
   public class TeamCityDataProvider
   {
-    private const string teamCityRestUrl = "http://evbyminsd246c:8080/guestAuth/app/rest/builds?locator=running:true";
+    private const string teamCityRestUrl = "http://evbyminsd4aaf:8080/guestAuth/app/rest/builds?locator=running:true";
     
     public async Task<Builds> QueryForRunningBuilds()
     {
